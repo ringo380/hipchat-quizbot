@@ -1,0 +1,54 @@
+{
+  "key": "quiz-bot",
+  "name": "Quiz Bot",
+  "description": "A Quizbot: My very first HipChat add-on",
+  "vendor": {
+    "name": "parnold",
+    "url": "https://spirit21.com"
+  },
+  "links": {
+    "self": "{{localBaseUrl}}/atlassian-connect.json",
+    "homepage": "{{localBaseUrl}}"
+  },
+  "capabilities": {
+    "hipchatApiConsumer": {
+      "scopes": [
+        "send_notification",
+        "view_room"
+      ],
+      "avatar": {
+        "url": "{{localBaseUrl}}/img/logo.png",
+        "url@2x": "{{localBaseUrl}}/img/logo.png"
+      }
+    },
+    "installable": {
+      "callbackUrl": "{{localBaseUrl}}/installable"
+    },
+    "configurable": {
+      "url": "{{localBaseUrl}}/config"
+    },
+    "webhook": [
+      {
+      "url": "{{localBaseUrl}}/startquiz",
+      "pattern": "^/startquiz",
+      "event": "room_message",
+      "name": "startquiz",
+      "authentication": "jwt"
+      },
+      {
+      "url": "{{localBaseUrl}}/answer",
+      "pattern": "^[^\/].*",
+      "event": "room_message",
+      "name": "answer",
+      "authentication": "jwt"
+      },
+      {
+      "url": "{{localBaseUrl}}/stopquiz",
+      "pattern": "^/stopquiz",
+      "event": "room_message",
+      "name": "stopquiz",
+      "authentication": "jwt"
+      }
+    ]
+  }
+}
