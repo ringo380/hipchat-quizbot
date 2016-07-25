@@ -3,12 +3,13 @@ var cors = require('cors');
 var uuid = require('uuid');
 var url = require('url');
 var round = 0;
-var maxrounds = 3;
+var maxrounds = 10;
 var players = [];
 var gameIsRunning = false;
 var items = null;
-var falseTryCounter = 0;
+var falseTryCounter = 1;
 var maxFalseTries = 10;
+var currentRegex = [];
 
 var mysql = require('mysql');
 var mysql_connection = mysql.createConnection({host : 'localhost', user : 'root', password : '', database : 'quizbot'});
@@ -162,12 +163,18 @@ module.exports = function (app, addon) {
   app.post('/startquiz',
     addon.authenticate(),
     function (req, res) {
+
+      //check for custom number of rounds
+      parameters = req["body"]["item"]["message"]["message"].split(" ");
+      if (parameters[1] != null && !isNaN(parseFloat(parameters[1])) && isFinite(parameters[1])) {
+        maxrounds = parameters[1];
+      }
       //reset game
       gameIsRunning = true;
       round = 1;
-      falseTryCounter = 0;
+      falseTryCounter = 1;
 
-      mysql_connection.query("SELECT * FROM items ORDER BY RAND() LIMIT 10", function (error, results, fields) {
+      mysql_connection.query("SELECT * FROM items2 ORDER BY RAND() LIMIT "+maxrounds, function (error, results, fields) {
         try {
           console.log(results);
           items = results;
@@ -181,16 +188,33 @@ module.exports = function (app, addon) {
         }
 
       //players = hipchat.user;
-      console.log(items);
-      hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Round '+round+' of '+maxrounds);
-      hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Ready! Set! Go!');
-      falseTryCounter = 0;
-      hipchat.sendMessage(req.clientInfo, req.identity.roomId, items[round-1]["question"])
-        .then(function (data) {
-          res.sendStatus(200);
-        });
+      falseTryCounter = 1;
+      correct_answer = items[round-1]["answer"];
+      if (items[round-1]["regex"] != null && items[round-1]["regex"] != "" ){
+        correct_answer = items[round-1]["regex"];
+      }
+      if (correct_answer.indexOf("#") > -1) {
+        part1Answer = correct_answer.split("#");
+        currentRegex.push(new RegExp(part1Answer[1],"i"));
+
+        part2Answer = correct_answer.replace(/#/g,"");
+        currentRegex.push(new RegExp(part2Answer, "i"));
+      } else {
+        currentRegex.push(new RegExp(correct_answer, "i"));
+      }
+      console.log(currentRegex);
+      hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Ready! Set! Go!').then(
+        function (data) {
+            hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Round '+round+' of '+maxrounds).then(
+            function (data) {
+              hipchat.sendMessage(req.clientInfo, req.identity.roomId, items[round-1]["question"])
+                .then(function (data) {
+                  res.sendStatus(200);
+          })
+        })
       });
     });
+  });
 
     app.post('/answer',
       addon.authenticate(),
@@ -198,9 +222,14 @@ module.exports = function (app, addon) {
         if (gameIsRunning) {
           proposed_answer = req["body"]["item"]["message"]["message"].toLowerCase();
           console.log(proposed_answer);
-          correct_answer = items[round-1]["answer"].toLowerCase();
-          console.log(correct_answer);
-          if (correct_answer.indexOf('\"'+proposed_answer+'\"') > -1) {
+          success = false;
+          for (r in currentRegex){
+            if (currentRegex[r].test(proposed_answer)){
+              success = true;
+            }
+          }
+
+          if (success) {
             //correct answer
             currentPlayerName = req["body"]["item"]["message"]["from"]["name"];
             nameFound = false;
@@ -218,7 +247,6 @@ module.exports = function (app, addon) {
 
             //tell its correct
             //if the round is still going give the next question
-              hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Correct! '+currentPlayerName+' gets a point');
               currentRanking = "";
               for (p in players){
                 currentRanking = currentRanking.concat(players[p]["name"]);
@@ -226,32 +254,75 @@ module.exports = function (app, addon) {
                 currentRanking = currentRanking.concat(players[p]["points"]);
                 currentRanking = currentRanking.concat("; ");
               }
-              hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Current Ranking: '+ currentRanking);
 
             if (round < maxrounds) {
               round = round + 1;
-              falseTryCounter = 0;
-              hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Next Question: '+ items[round-1]["question"])
-                .then(function (data) {
-                  res.sendStatus(200);
-                });
+              falseTryCounter = 1;
+              currentRegex = [];
+              correct_answer = items[round-1]["answer"];
+              if (items[round-1]["regex"] != null && items[round-1]["regex"] != "" ){
+                correct_answer = items[round-1]["regex"];
+              }
+              if (correct_answer.indexOf("#") > -1) {
+                part1Answer = correct_answer.split("#");
+                currentRegex.push(new RegExp(part1Answer[1],"i"));
+
+                part2Answer = correct_answer.replace(/#/g,"");
+                currentRegex.push(new RegExp(part2Answer, "i"));
+              } else {
+                currentRegex.push(new RegExp(correct_answer, "i"));
+              }
+              console.log(currentRegex);
+              hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Correct! '+currentPlayerName+' gets a point').then(
+                function(data) {
+                  hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Current Ranking: '+ currentRanking).then(
+                    function(data){
+                      hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Next Question: '+ items[round-1]["question"]).then(
+                        function (data) {
+                          res.sendStatus(200);
+                      })
+                    })
+                  });
             } else {
               gameIsRunning = false;
+              round = 0;
+              maxrounds = 10;
+              players = [];
+              currentRegex = [];
               hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Game Finished! Thank your for playing!')
                 .then(function (data) {
                   res.sendStatus(200);
                 });
             }
           } else {
-            if (falseTryCounter >= maxFalseTries)
-            {
-                hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'No one answered the question correctly :( ');
-                round = round + 1;
-                falseTryCounter = 0;
-                hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Next Question: '+ items[round-1]["question"])
-                  .then(function (data) {
-                    res.sendStatus(200);
-                  });
+            if (falseTryCounter >= maxFalseTries) {
+              hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'No one answered the question correctly :( ').then(
+                function(data) {
+                  hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'The correct answer was: '+items[round-1]["answer"]).then(
+                    function(data) {
+                      round = round + 1;
+                      falseTryCounter = 1;
+                      currentRegex = [];
+                      correct_answer = items[round-1]["answer"];
+                      if (items[round-1]["regex"] != null && items[round-1]["regex"] != "" ){
+                        correct_answer = items[round-1]["regex"];
+                      }
+                      if (correct_answer.indexOf("#") > -1) {
+                        part1Answer = correct_answer.split("#");
+                        currentRegex.push(new RegExp(part1Answer[1],"i"));
+
+                        part2Answer = correct_answer.replace(/#/g,"");
+                        currentRegex.push(new RegExp(part2Answer, "i"));
+                      } else {
+                        currentRegex.push(new RegExp(correct_answer, "i"));
+                      }
+                      console.log(currentRegex);
+                      hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Next Question: '+ items[round-1]["question"])
+                      .then(function (data) {
+                        res.sendStatus(200);
+                      });
+                    });
+                });
             }
             falseTryCounter = falseTryCounter + 1;
           }
@@ -267,9 +338,11 @@ module.exports = function (app, addon) {
       console.log(round);
       gameIsRunning = false;
       round = 0;
+      maxrounds = 10;
       players = [];
+      currentRegex = [];
 
-      hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'stop')
+      hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'All quizzes stopped. Please restart with /startquiz <number of rounds. default 10>')
         .then(function (data) {
           res.sendStatus(200);
         });
@@ -280,7 +353,7 @@ module.exports = function (app, addon) {
   // Connect's install flow, check out:
   // https://developer.atlassian.com/hipchat/guide/installation-flow
   addon.on('installed', function (clientKey, clientInfo, req) {
-    hipchat.sendMessage(clientInfo, req.body.roomId, 'The ' + addon.descriptor.name + ' add-on is ready to quiz!');
+    hipchat.sendMessage(clientInfo, req.body.roomId, 'The ' + addon.descriptor.name + ' is ready to quiz with /startquiz <number of rounds. default 10>');
   });
 
   // Clean up clients when uninstalled
