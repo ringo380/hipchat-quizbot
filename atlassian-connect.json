@@ -1,7 +1,7 @@
 {
   "key": "quiz-bot",
   "name": "Quiz Bot",
-  "description": "A Quizbot: My very first HipChat add-on",
+  "description": "A Quizbot - My very first HipChat add-on",
   "vendor": {
     "name": "parnold",
     "url": "https://spirit21.com"

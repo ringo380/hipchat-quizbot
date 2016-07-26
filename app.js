@@ -46,7 +46,7 @@ var hipchat = require('atlassian-connect-express-hipchat')(addon, app);
 app.set('port', port);
 
 // Configure the Handlebars view engine
-app.engine('hbs', hbs.express3({partialsDir: viewsDir}));
+app.engine('hbs', hbs.express3({'partialsDir': viewsDir}));
 app.set('view engine', 'hbs');
 app.set('views', viewsDir);
 
@@ -55,13 +55,13 @@ app.set('views', viewsDir);
 app.use(morgan(devEnv ? 'dev' : 'combined'));
 // Include request parsers
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({'extended': false}));
 // Gzip responses when appropriate
 app.use(compression());
 // Enable the ACE global middleware (populates res.locals with add-on related stuff)
 app.use(addon.middleware());
 // Enable static resource fingerprinting for far future expires caching in production
-app.use(expiry(app, {dir: staticDir, debug: devEnv}));
+app.use(expiry(app, {'dir': staticDir, 'debug': devEnv}));
 // Add an hbs helper to fingerprint static resource urls
 hbs.registerHelper('furl', function(url){ return app.locals.furl(url); });
 // Mount the static resource dir
