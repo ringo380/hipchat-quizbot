@@ -12,14 +12,46 @@ var maxFalseTries = 10;
 var currentRegex = [];
 
 var mysql = require('mysql');
-var mysqlConnection = mysql.createConnection({'host': 'localhost', 'user': 'quizbot', 'password': 'quiz123!987bot', 'database': 'quizbot'});
-mysqlConnection.connect(function(err) {
-  if (err) {
-    console.error('error connecting: ' + err.stack);
-    return;
+var mysqlConnection = "";
+
+var dbConfig = {'host': 'localhost', 'user': 'quizbot', 'password': 'quiz123!987bot', 'database': 'quizbot'};
+
+function handleDisconnect(){
+  mysqlConnection = mysql.createConnection(dbConfig); // Recreate the connection, since
+                                                  // the old one cannot be reused.
+
+  mysqlConnection.connect(function(err){              // The server is either down
+    if(err){                                     // or restarting (takes a while sometimes).
+      console.log('error when connecting to db:', err);
+      setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
+    }                                     // to avoid a hot loop, and to allow our node script to
+  });                                     // process asynchronous requests in the meantime.
+                                          // If you're also serving http, display a 503 error.
+  mysqlConnection.on('error', function(err){
+    console.log('db error', err);
+    if(err.code === 'PROTOCOL_CONNECTION_LOST'){ // Connection to the MySQL server is usually
+      handleDisconnect();                         // lost due to either server restart, or a
+    } else {                                      // connnection idle timeout (the wait_timeout
+      throw err;                                  // server variable configures this)
+    }
+  });
+}
+
+function generateAnswerRegexs(){
+  var correctAnswer = items[round-1]["answer"];
+  if (items[round-1]["regex"] !== null && items[round-1]["regex"] !== "" ){
+    correctAnswer = items[round-1]["regex"];
   }
-  console.log('connected to mysql db as id ' + mysqlConnection.threadId);
-});
+  if (correctAnswer.indexOf("#") > -1) {
+    var part1Answer = correctAnswer.split("#");
+    currentRegex.push(new RegExp(part1Answer[1], "i"));
+
+    var part2Answer = correctAnswer.replace(/#/g, "");
+    currentRegex.push(new RegExp(part2Answer, "i"));
+  } else {
+    currentRegex.push(new RegExp(correctAnswer, "i"));
+  }
+}
 
 // This is the heart of your HipChat Connect add-on. For more information,
 // take a look at https://developer.atlassian.com/hipchat/tutorials/getting-started-with-atlassian-connect-express-node-js
@@ -189,19 +221,7 @@ module.exports = function(app, addon) {
 
       // players = hipchat.user;
         falseTryCounter = 1;
-        var correctAnswer = items[round-1]["answer"];
-        if (items[round-1]["regex"] !== null && items[round-1]["regex"] !== "" ){
-          correctAnswer = items[round-1]["regex"];
-        }
-        if (correctAnswer.indexOf("#") > -1) {
-          var part1Answer = correctAnswer.split("#");
-          currentRegex.push(new RegExp(part1Answer[1], "i"));
-
-          var part2Answer = correctAnswer.replace(/#/g, "");
-          currentRegex.push(new RegExp(part2Answer, "i"));
-        } else {
-          currentRegex.push(new RegExp(correctAnswer, "i"));
-        }
+        generateAnswerRegexs();
         console.log(currentRegex);
         hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Ready! Set! Go!').then(
          function(data) {
@@ -259,19 +279,7 @@ module.exports = function(app, addon) {
               round = round + 1;
               falseTryCounter = 1;
               currentRegex = [];
-              var correctAnswer = items[round-1]["answer"];
-              if (items[round-1]["regex"] !== null && items[round-1]["regex"] !== "" ){
-                correctAnswer = items[round-1]["regex"];
-              }
-              if (correctAnswer.indexOf("#") > -1) {
-                var part1Answer = correctAnswer.split("#");
-                currentRegex.push(new RegExp(part1Answer[1], "i"));
-
-                var part2Answer = correctAnswer.replace(/#/g, "");
-                currentRegex.push(new RegExp(part2Answer, "i"));
-              } else {
-                currentRegex.push(new RegExp(correctAnswer, "i"));
-              }
+              generateAnswerRegexs();
               console.log(currentRegex);
               hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Correct! '+currentPlayerName+' gets a point').then(
                 function(data) {
@@ -318,19 +326,7 @@ module.exports = function(app, addon) {
 
                       falseTryCounter = 1;
                       currentRegex = [];
-                      var correctAnswer = items[round-1]["answer"];
-                      if (items[round-1]["regex"] !== null && items[round-1]["regex"] !== "" ) {
-                        correctAnswer = items[round-1]["regex"];
-                      }
-                      if (correctAnswer.indexOf("#") > -1) {
-                        var part1Answer = correctAnswer.split("#");
-                        currentRegex.push(new RegExp(part1Answer[1], "i"));
-
-                        var part2Answer = correctAnswer.replace(/#/g, "");
-                        currentRegex.push(new RegExp(part2Answer, "i"));
-                      } else {
-                        currentRegex.push(new RegExp(correctAnswer, "i"));
-                      }
+                      generateAnswerRegexs();
                       console.log(currentRegex);
                       hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'New Question: '+ items[round-1]["question"])
                       .then(function(data) {
