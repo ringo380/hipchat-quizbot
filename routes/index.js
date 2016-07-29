@@ -12,7 +12,7 @@ var maxFalseTries = 10;
 var currentRegex = [];
 
 var mysql = require('mysql');
-var mysqlConnection = "";
+var mysqlConnection = null;
 
 var dbConfig = {'host': 'localhost', 'user': 'quizbot', 'password': 'quiz123!987bot', 'database': 'quizbot'};
 
@@ -65,7 +65,7 @@ module.exports = function(app, addon) {
 
   // Root route. This route will serve the `addon.json` unless a homepage URL is
   // specified in `addon.json`.
-/*  app.get('/',
+  app.get('/',
     function (req, res) {
       // Use content-type negotiation to choose the best way to respond
       res.format({
@@ -85,7 +85,7 @@ module.exports = function(app, addon) {
         }
       });
     }
-    );*/
+    );
 
   // This is an example route that's used by the default for the configuration page
   // https://developer.atlassian.com/hipchat/guide/configuration-page
@@ -196,6 +196,11 @@ module.exports = function(app, addon) {
     addon.authenticate(),
     function(req, res) {
 
+      //check for db connection
+      if (mysqlConnection === null){
+        console.log("Retrieve Database connection");
+        handleDisconnect();
+      }
       // check for custom number of rounds
       var parameters = req["body"]["item"]["message"]["message"].split(" ");
       if (parameters[1] !== null && !isNaN(parseFloat(parameters[1])) && isFinite(parameters[1])) {
@@ -220,21 +225,16 @@ module.exports = function(app, addon) {
         }
 
       // players = hipchat.user;
-        falseTryCounter = 1;
-        generateAnswerRegexs();
-        console.log(currentRegex);
-        hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Ready! Set! Go!').then(
-         function(data) {
-           hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Round ' + round + ' of '+maxrounds).then(
-             function(data) {
-               hipchat.sendMessage(req.clientInfo, req.identity.roomId, items[round-1]["question"])
-                 .then(function(data) {
-                   res.sendStatus(200);
-                 });
-               });
-             });
-           });
-         });
+          falseTryCounter = 1;
+          generateAnswerRegexs();
+          console.log(currentRegex);
+          hipchat.sendMessage(req.clientInfo, req.identity.roomId, 
+            'Ready! Set! Go! </br> Round ' + round + ' of '+maxrounds + '</br>' + items[round-1]["question"])
+            .then(function(data) {
+              res.sendStatus(200);
+          });
+        });
+      });
 
       app.post('/answer',
         addon.authenticate(),
@@ -281,36 +281,26 @@ module.exports = function(app, addon) {
               currentRegex = [];
               generateAnswerRegexs();
               console.log(currentRegex);
-              hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Correct! '+currentPlayerName+' gets a point').then(
-                function(data) {
-                  hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Current Ranking: ' + currentRanking).then(
-                    function(data) {
-                      hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Next Question: ' + items[round-1]["question"]).then(
-                        function(data) {
-                          res.sendStatus(200);
-                      });
-                    });
-                  });
+              hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Correct! '+currentPlayerName+' gets a point </br> Current Ranking: ' + currentRanking + '</br> Next Question: ' + items[round-1]["question"])
+                .then(function(data) {
+                  res.sendStatus(200);
+                });
             } else {
               gameIsRunning = false;
               round = 0;
               maxrounds = 10;
               players = [];
               currentRegex = [];
-              hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Game Finished! Thank your for playing!').then(function(data) {
-                hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Final Score: ' + currentRanking)
-                  .then(function (data) {
+              hipchat.sendMessage(req.clientInfo, req.identity.roomId, 
+                'Game Finished! Thank your for playing! </br> Final Score: ' + currentRanking)
+                .then(function(data) {
                     res.sendStatus(200);
-                  });
                 });
             }
           } else {
             if (falseTryCounter >= maxFalseTries) {
-              hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'No one answered the question correctly :( ').then(
-                function(data) {
-                  hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'The correct answer was: ' + items[round-1]["answer"]).then(
-                    function(data) {
-                      // round = round + 1;
+              hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'No one answered the question correctly :( </br> The correct answer was: ' + items[round-1]["answer"])
+                .then(function(data) {
                       mysqlConnection.query("SELECT * FROM items2 ORDER BY RAND() LIMIT " + maxrounds, function(error, results, fields) {
                       try {
                         console.log(results);
@@ -332,8 +322,7 @@ module.exports = function(app, addon) {
                       .then(function(data) {
                         res.sendStatus(200);
                       });
-                    });
-                });
+                 });
               });
             }
             falseTryCounter = falseTryCounter + 1;
@@ -354,7 +343,7 @@ module.exports = function(app, addon) {
       players = [];
       currentRegex = [];
 
-      hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'All quizzes stopped. Please restart with /startquiz <number of rounds. default 10>')
+      hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'All quizzes stopped. Please restart with /startquiz {number of rounds. default 10}')
         .then(function (data) {
           res.sendStatus(200);
         });
@@ -365,7 +354,7 @@ module.exports = function(app, addon) {
   // Connect's install flow, check out:
   // https://developer.atlassian.com/hipchat/guide/installation-flow
   addon.on('installed', function(clientKey, clientInfo, req) {
-    hipchat.sendMessage(clientInfo, req.body.roomId, 'The ' + addon.descriptor.name + ' is ready to quiz with /startquiz <number of rounds. default 10>');
+    hipchat.sendMessage(clientInfo, req.body.roomId, 'The ' + addon.descriptor.name + ' is ready to quiz with /startquiz {number of rounds. default 10}');
   });
 
   // Clean up clients when uninstalled
