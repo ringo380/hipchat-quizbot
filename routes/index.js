@@ -10,6 +10,7 @@ var items = null;
 var falseTryCounter = 1;
 var maxFalseTries = 10;
 var currentRegex = [];
+var nextCount = 0;
 
 var mysql = require('mysql');
 var mysqlConnection = null;
@@ -37,6 +38,15 @@ function handleDisconnect(){
   });
 }
 
+function resetGlobalVars(){
+  gameIsRunning = false;
+  round = 0;
+  maxrounds = 10;
+  nextCount = 0;
+  players = [];
+  currentRegex = [];
+}
+
 function generateAnswerRegexs(){
   var correctAnswer = items[round-1]["answer"];
   if (items[round-1]["regex"] !== null && items[round-1]["regex"] !== "" ){
@@ -51,6 +61,34 @@ function generateAnswerRegexs(){
   } else {
     currentRegex.push(new RegExp(correctAnswer, "i"));
   }
+}
+
+function resetQuestions(hipchat, req){
+  console.log(hipchat);
+  var oldAnswer = items[round-1]["answer"];
+  mysqlConnection.query("SELECT * FROM items2 ORDER BY RAND() LIMIT " + maxrounds, function(error, results, fields) {
+  try {
+    console.log(results);
+    items = results;
+  } catch (err) {
+    console.log("DB Error: " + err.message);
+    console.log(error);
+    hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Error getting questions from database')
+      .then(function(data) {
+         res.sendStatus(200);
+      });
+  }
+
+  falseTryCounter = 1;
+  currentRegex = [];
+  nextCount = 0;
+  generateAnswerRegexs();
+  console.log(currentRegex);
+  hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'No one answered the question correctly :( </br> The correct answer was: ' + oldAnswer +'</br> New Question: '+ items[round-1]["question"])
+    .then(function(data) {
+       res.sendStatus(200);
+    });
+});
 }
 
 // This is the heart of your HipChat Connect add-on. For more information,
@@ -209,6 +247,7 @@ module.exports = function(app, addon) {
       // reset game
       gameIsRunning = true;
       round = 1;
+      nextCount = 0;
       falseTryCounter = 1;
 
       mysqlConnection.query("SELECT * FROM items2 ORDER BY RAND() LIMIT " + maxrounds, function(error, results, fields) {
@@ -228,7 +267,7 @@ module.exports = function(app, addon) {
           falseTryCounter = 1;
           generateAnswerRegexs();
           console.log(currentRegex);
-          hipchat.sendMessage(req.clientInfo, req.identity.roomId, 
+          hipchat.sendMessage(req.clientInfo, req.identity.roomId,
             'Ready! Set! Go! </br> Round ' + round + ' of '+maxrounds + '</br>' + items[round-1]["question"])
             .then(function(data) {
               res.sendStatus(200);
@@ -279,6 +318,7 @@ module.exports = function(app, addon) {
               round = round + 1;
               falseTryCounter = 1;
               currentRegex = [];
+              nextCount = 0;
               generateAnswerRegexs();
               console.log(currentRegex);
               hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Correct! '+currentPlayerName+' gets a point </br> Current Ranking: ' + currentRanking + '</br> Next Question: ' + items[round-1]["question"])
@@ -286,12 +326,8 @@ module.exports = function(app, addon) {
                   res.sendStatus(200);
                 });
             } else {
-              gameIsRunning = false;
-              round = 0;
-              maxrounds = 10;
-              players = [];
-              currentRegex = [];
-              hipchat.sendMessage(req.clientInfo, req.identity.roomId, 
+              resetGlobalVars();
+              hipchat.sendMessage(req.clientInfo, req.identity.roomId,
                 'Game Finished! Thank your for playing! </br> Final Score: ' + currentRanking)
                 .then(function(data) {
                     res.sendStatus(200);
@@ -299,31 +335,7 @@ module.exports = function(app, addon) {
             }
           } else {
             if (falseTryCounter >= maxFalseTries) {
-              hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'No one answered the question correctly :( </br> The correct answer was: ' + items[round-1]["answer"])
-                .then(function(data) {
-                      mysqlConnection.query("SELECT * FROM items2 ORDER BY RAND() LIMIT " + maxrounds, function(error, results, fields) {
-                      try {
-                        console.log(results);
-                        items = results;
-                      } catch (err) {
-                        console.log("DB Error: " + err.message);
-                        console.log(error);
-                        hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Error getting questions from database')
-                          .then(function(data) {
-                            res.sendStatus(200);
-                          });
-                       }
-
-                      falseTryCounter = 1;
-                      currentRegex = [];
-                      generateAnswerRegexs();
-                      console.log(currentRegex);
-                      hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'New Question: '+ items[round-1]["question"])
-                      .then(function(data) {
-                        res.sendStatus(200);
-                      });
-                 });
-              });
+              resetQuestions(hipchat, req);
             }
             falseTryCounter = falseTryCounter + 1;
           }
@@ -331,17 +343,41 @@ module.exports = function(app, addon) {
       }
     );
 
+  app.post('/again',
+    addon.authenticate(),
+    function(req, res) {
+      hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'Current Question: ' + items[round-1]["question"])
+        .then(function (data) {
+          res.sendStatus(200);
+        });
+    }
+    );
+
+ app.post('/next',
+    addon.authenticate(),
+    function(req, res) {
+      nextCount = nextCount + 1;     
+      console.log("vote next");
+      var halfNumberOfPlayer = 1;
+      if (players !== null){
+        halfNumberOfPlayer = players.length/2
+      }
+      console.log(halfNumberOfPlayer);
+      if (nextCount > halfNumberOfPlayer) {
+        console.log("reset question");
+        resetQuestions(hipchat, req);
+      }
+    }
+    );
+
+
   // This is an example route to handle an incoming webhook
   // https://developer.atlassian.com/hipchat/guide/webhooks
   app.post('/stopquiz',
     addon.authenticate(),
     function(req, res) {
       console.log(round);
-      gameIsRunning = false;
-      round = 0;
-      maxrounds = 10;
-      players = [];
-      currentRegex = [];
+      resetGlobalVars();
 
       hipchat.sendMessage(req.clientInfo, req.identity.roomId, 'All quizzes stopped. Please restart with /startquiz {number of rounds. default 10}')
         .then(function (data) {

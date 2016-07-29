@@ -48,6 +48,20 @@
       "event": "room_message",
       "name": "stopquiz",
       "authentication": "jwt"
+      },
+      {
+      "url": "{{localBaseUrl}}/next",
+      "pattern": "^/next",
+      "event": "room_message",
+      "name": "again",
+      "authentication": "jwt"
+      },
+      {
+      "url": "{{localBaseUrl}}/again",
+      "pattern": "^/again",
+      "event": "room_message",
+      "name": "again",
+      "authentication": "jwt"
       }
     ]
   }
