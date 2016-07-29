@@ -15,7 +15,7 @@ var nextCount = 0;
 var mysql = require('mysql');
 var mysqlConnection = null;
 
-var dbConfig = {'host': 'localhost', 'user': 'quizbot', 'password': 'quiz123!987bot', 'database': 'quizbot'};
+var dbConfig = {'host': 'eu-cdbr-west-01.cleardb.com', 'user': 'b8c3796b763f3d', 'password': '525e3507', 'database': 'heroku_3c8f36cc822ad2b'};
 
 function handleDisconnect(){
   mysqlConnection = mysql.createConnection(dbConfig); // Recreate the connection, since
