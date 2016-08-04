@@ -1,0 +1,179 @@
+
+/home/ccarpo/Downloads/hipchat-quizbot/routes/index.js
+   15:1    warning  Line 15 exceeds the maximum line length of 80                                                               max-len
+  165:24   error    Block must not be padded by blank lines                                                                     padded-blocks
+  168:28   error    ["body"] is better written in dot notation                                                                  dot-notation
+  168:36   error    ["item"] is better written in dot notation                                                                  dot-notation
+  168:44   error    ["message"] is better written in dot notation                                                               dot-notation
+  168:55   error    ["message"] is better written in dot notation                                                               dot-notation
+  169:1    warning  Line 169 exceeds the maximum line length of 80                                                              max-len
+  177:1    warning  Line 177 exceeds the maximum line length of 80                                                              max-len
+  184:1    warning  Line 184 exceeds the maximum line length of 80                                                              max-len
+  192:40   error    Infix operators must be spaced                                                                              space-infix-ops
+  192:44   error    ["answer"] is better written in dot notation                                                                dot-notation
+  193:1    warning  Line 193 exceeds the maximum line length of 80                                                              max-len
+  193:24   error    Infix operators must be spaced                                                                              space-infix-ops
+  193:28   error    ["regex"] is better written in dot notation                                                                 dot-notation
+  193:60   error    Infix operators must be spaced                                                                              space-infix-ops
+  193:64   error    ["regex"] is better written in dot notation                                                                 dot-notation
+  193:80   error    There should be no spaces inside this paren                                                                 space-in-parens
+  193:81   error    Missing space before opening brace                                                                          space-before-blocks
+  194:38   error    Infix operators must be spaced                                                                              space-infix-ops
+  194:42   error    ["regex"] is better written in dot notation                                                                 dot-notation
+  198:54   error    A space is required after ','                                                                               comma-spacing
+  200:55   error    A space is required after ','                                                                               comma-spacing
+  206:1    warning  Line 206 exceeds the maximum line length of 80                                                              max-len
+  207:18   error    Unexpected space before function parentheses                                                                space-before-function-paren
+  208:1    warning  Line 208 exceeds the maximum line length of 80                                                              max-len
+  208:94   error    Infix operators must be spaced                                                                              space-infix-ops
+  209:22   error    Unexpected space before function parentheses                                                                space-before-function-paren
+  210:1    warning  Line 210 exceeds the maximum line length of 80                                                              max-len
+  210:84   error    Infix operators must be spaced                                                                              space-infix-ops
+  210:88   error    ["question"] is better written in dot notation                                                              dot-notation
+  211:24   warning  Too many nested callbacks (5). Maximum allowed is 4                                                         max-nested-callbacks
+  211:32   error    Unexpected space before function parentheses                                                                space-before-function-paren
+  214:16   error    Expected indentation of 13 space characters but found 15                                                    indent
+  215:14   error    Expected indentation of 9 space characters but found 13                                                     indent
+  216:12   error    Expected indentation of 6 space characters but found 11                                                     indent
+  217:10   error    Expected indentation of 4 space characters but found 9                                                      indent
+  219:7    error    Expected indentation of 2 space characters but found 6                                                      indent
+  221:17   error    Unexpected space before function parentheses                                                                space-before-function-paren
+  221:28   error    Missing space before opening brace                                                                          space-before-blocks
+  222:29   error    Missing space before opening brace                                                                          space-before-blocks
+  223:1    warning  Line 223 exceeds the maximum line length of 80                                                              max-len
+  223:13   error    Identifier 'proposed_answer' is not in camel case                                                           camelcase
+  223:13   error    'proposed_answer' is not defined                                                                            no-undef
+  223:35   error    ["body"] is better written in dot notation                                                                  dot-notation
+  223:43   error    ["item"] is better written in dot notation                                                                  dot-notation
+  223:51   error    ["message"] is better written in dot notation                                                               dot-notation
+  223:62   error    ["message"] is better written in dot notation                                                               dot-notation
+  224:25   error    'proposed_answer' is not defined                                                                            no-undef
+  226:40   error    Missing space before opening brace                                                                          space-before-blocks
+  227:40   error    'proposed_answer' is not defined                                                                            no-undef
+  227:57   error    Missing space before opening brace                                                                          space-before-blocks
+  232:11   error    Expected indentation of 12 space characters but found 10                                                    indent
+  234:1    warning  Line 234 exceeds the maximum line length of 80                                                              max-len
+  234:41   error    ["body"] is better written in dot notation                                                                  dot-notation
+  234:49   error    ["item"] is better written in dot notation                                                                  dot-notation
+  234:57   error    ["message"] is better written in dot notation                                                               dot-notation
+  234:68   error    ["from"] is better written in dot notation                                                                  dot-notation
+  234:76   error    ["name"] is better written in dot notation                                                                  dot-notation
+  236:22   error    'p' used outside of binding context                                                                         block-scoped-var
+  236:35   error    Missing space before opening brace                                                                          space-before-blocks
+  237:27   error    'p' used outside of binding context                                                                         block-scoped-var
+  237:30   error    ["name"] is better written in dot notation                                                                  dot-notation
+  240:17   error    Assignment can be replaced with operator assignment                                                         operator-assignment
+  240:25   error    'p' used outside of binding context                                                                         block-scoped-var
+  240:28   error    ["points"] is better written in dot notation                                                                dot-notation
+  240:48   error    'p' used outside of binding context                                                                         block-scoped-var
+  240:51   error    ["points"] is better written in dot notation                                                                dot-notation
+  243:28   error    Missing space before opening brace                                                                          space-before-blocks
+  250:2    error    Mixed spaces and tabs                                                                                       no-mixed-spaces-and-tabs
+  250:6    error    Expected indentation of 12 space characters but found 0                                                     indent
+  251:2    error    Mixed spaces and tabs                                                                                       no-mixed-spaces-and-tabs
+  251:6    error    The body of a for-in should be wrapped in an if statement to filter unwanted properties from the prototype  guard-for-in
+  251:6    error    Expected indentation of 12 space characters but found 0                                                     indent
+  251:15   error    'p' is already defined                                                                                      no-redeclare
+  251:15   error    'p' used outside of binding context                                                                         block-scoped-var
+  251:28   error    Missing space before opening brace                                                                          space-before-blocks
+  252:2    error    Mixed spaces and tabs                                                                                       no-mixed-spaces-and-tabs
+  252:8    error    Expected indentation of 2 space characters but found 0                                                      indent
+  252:55   error    'p' used outside of binding context                                                                         block-scoped-var
+  252:58   error    ["name"] is better written in dot notation                                                                  dot-notation
+  253:2    error    Mixed spaces and tabs                                                                                       no-mixed-spaces-and-tabs
+  253:8    error    Expected indentation of 2 space characters but found 0                                                      indent
+  254:2    error    Mixed spaces and tabs                                                                                       no-mixed-spaces-and-tabs
+  254:8    error    Expected indentation of 2 space characters but found 0                                                      indent
+  254:55   error    'p' used outside of binding context                                                                         block-scoped-var
+  254:58   error    ["points"] is better written in dot notation                                                                dot-notation
+  255:2    error    Mixed spaces and tabs                                                                                       no-mixed-spaces-and-tabs
+  255:8    error    Expected indentation of 2 space characters but found 0                                                      indent
+  256:2    error    Mixed spaces and tabs                                                                                       no-mixed-spaces-and-tabs
+  259:15   error    Assignment can be replaced with operator assignment                                                         operator-assignment
+  262:15   error    'correctAnswer' is not defined                                                                              no-undef
+  262:42   error    Infix operators must be spaced                                                                              space-infix-ops
+  262:46   error    ["answer"] is better written in dot notation                                                                dot-notation
+  263:1    warning  Line 263 exceeds the maximum line length of 80                                                              max-len
+  263:30   error    Infix operators must be spaced                                                                              space-infix-ops
+  263:34   error    ["regex"] is better written in dot notation                                                                 dot-notation
+  263:66   error    Infix operators must be spaced                                                                              space-infix-ops
+  263:70   error    ["regex"] is better written in dot notation                                                                 dot-notation
+  263:79   error    Expected '!==' and instead saw '!='                                                                         eqeqeq
+  263:85   error    There should be no spaces inside this paren                                                                 space-in-parens
+  263:86   error    Missing space before opening brace                                                                          space-before-blocks
+  264:17   error    'correctAnswer' is not defined                                                                              no-undef
+  264:44   error    Infix operators must be spaced                                                                              space-infix-ops
+  264:48   error    ["regex"] is better written in dot notation                                                                 dot-notation
+  266:19   error    'correctAnswer' is not defined                                                                              no-undef
+  267:35   error    'correctAnswer' is not defined                                                                              no-undef
+  268:60   error    A space is required after ','                                                                               comma-spacing
+  270:35   error    'correctAnswer' is not defined                                                                              no-undef
+  270:61   error    A space is required after ','                                                                               comma-spacing
+  273:46   error    'correctAnswer' is not defined                                                                              no-undef
+  276:1    warning  Line 276 exceeds the maximum line length of 80                                                              max-len
+  276:83   error    Infix operators must be spaced                                                                              space-infix-ops
+  276:101  error    Infix operators must be spaced                                                                              space-infix-ops
+  278:1    warning  Line 278 exceeds the maximum line length of 80                                                              max-len
+  279:35   error    Missing space before opening brace                                                                          space-before-blocks
+  280:1    warning  Line 280 exceeds the maximum line length of 80                                                              max-len
+  280:111  error    Infix operators must be spaced                                                                              space-infix-ops
+  280:115  error    ["question"] is better written in dot notation                                                              dot-notation
+  281:33   error    Unexpected space before function parentheses                                                                space-before-function-paren
+  283:23   error    Expected indentation of 24 space characters but found 22                                                    indent
+  285:19   error    Expected indentation of 16 space characters but found 18                                                    indent
+  292:1    warning  Line 292 exceeds the maximum line length of 80                                                              max-len
+  293:31   error    Unexpected space before function parentheses                                                                space-before-function-paren
+  299:1    warning  Line 299 exceeds the maximum line length of 80                                                              max-len
+  301:1    warning  Line 301 exceeds the maximum line length of 80                                                              max-len
+  301:102  error    Infix operators must be spaced                                                                              space-infix-ops
+  301:114  error    Infix operators must be spaced                                                                              space-infix-ops
+  301:118  error    ["answer"] is better written in dot notation                                                                dot-notation
+  303:23   error    Assignment can be replaced with operator assignment                                                         operator-assignment
+  306:23   error    'correctAnswer' is not defined                                                                              no-undef
+  306:50   error    Infix operators must be spaced                                                                              space-infix-ops
+  306:54   error    ["answer"] is better written in dot notation                                                                dot-notation
+  307:1    warning  Line 307 exceeds the maximum line length of 80                                                              max-len
+  307:38   error    Infix operators must be spaced                                                                              space-infix-ops
+  307:42   error    ["regex"] is better written in dot notation                                                                 dot-notation
+  307:74   error    Infix operators must be spaced                                                                              space-infix-ops
+  307:78   error    ["regex"] is better written in dot notation                                                                 dot-notation
+  307:87   error    Expected '!==' and instead saw '!='                                                                         eqeqeq
+  307:93   error    There should be no spaces inside this paren                                                                 space-in-parens
+  307:94   error    Missing space before opening brace                                                                          space-before-blocks
+  308:25   error    'correctAnswer' is not defined                                                                              no-undef
+  308:52   error    Infix operators must be spaced                                                                              space-infix-ops
+  308:56   error    ["regex"] is better written in dot notation                                                                 dot-notation
+  310:27   error    'correctAnswer' is not defined                                                                              no-undef
+  311:25   error    'part1Answer' used outside of binding context                                                               block-scoped-var
+  311:39   error    'correctAnswer' is not defined                                                                              no-undef
+  312:54   error    'part1Answer' used outside of binding context                                                               block-scoped-var
+  312:68   error    A space is required after ','                                                                               comma-spacing
+  314:25   error    'part2Answer' used outside of binding context                                                               block-scoped-var
+  314:39   error    'correctAnswer' is not defined                                                                              no-undef
+  314:65   error    A space is required after ','                                                                               comma-spacing
+  315:54   error    'part2Answer' used outside of binding context                                                               block-scoped-var
+  317:54   error    'correctAnswer' is not defined                                                                              no-undef
+  320:1    warning  Line 320 exceeds the maximum line length of 80                                                              max-len
+  320:97   error    Infix operators must be spaced                                                                              space-infix-ops
+  320:110  error    Infix operators must be spaced                                                                              space-infix-ops
+  320:114  error    ["question"] is better written in dot notation                                                              dot-notation
+  321:37   error    Unexpected space before function parentheses                                                                space-before-function-paren
+  327:13   error    Assignment can be replaced with operator assignment                                                         operator-assignment
+  329:9    error    Expected indentation of 10 space characters but found 8                                                     indent
+  330:7    error    Expected indentation of 8 space characters but found 6                                                      indent
+  337:13   error    Unexpected space before function parentheses                                                                space-before-function-paren
+  345:1    warning  Line 345 exceeds the maximum line length of 80                                                              max-len
+  346:23   error    Unexpected space before function parentheses                                                                space-before-function-paren
+  355:33   error    Unexpected space before function parentheses                                                                space-before-function-paren
+  356:1    warning  Line 356 exceeds the maximum line length of 80                                                              max-len
+  360:35   error    Unexpected space before function parentheses                                                                space-before-function-paren
+  361:1    warning  Line 361 exceeds the maximum line length of 80                                                              max-len
+  361:25   error    'clientInfo' is not defined                                                                                 no-undef
+  361:37   error    'req' is not defined                                                                                        no-undef
+  362:43   warning  Expected error to be handled                                                                                handle-callback-err
+  362:51   error    Unexpected space before function parentheses                                                                space-before-function-paren
+  363:27   error    Unexpected space before function parentheses                                                                space-before-function-paren
+  370:1    error    Block must not be padded by blank lines                                                                     padded-blocks
+
+✖ 174 problems (150 errors, 24 warnings)
+
