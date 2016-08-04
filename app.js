@@ -37,7 +37,7 @@ var addon = ac(app);
 // You can set this in `config.js`
 var port = addon.config.port();
 // Declares the environment to use in `config.js`
-var devEnv = app.get('env') == 'production';
+var devEnv = app.get('env') == 'development';
 
 // Load the HipChat AC compat layer
 var hipchat = require('atlassian-connect-express-hipchat')(addon, app);
