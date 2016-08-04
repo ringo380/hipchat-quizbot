@@ -808,8 +808,6 @@ INSERT INTO items2 (category, question, answer, regex, difficulty ) VALUES ('Com
 
 INSERT INTO items2 (category, question, answer, regex ) VALUES ('Computer', 'Wofuer steht "VB"?', 'Visual Basic', 'visual[- ]?basic' );
 
-INSERT INTO items2 (category, question, answer ) VALUES ('Computer', 'Wohin kann man Bugs und Kritik zum Bot schicken?', 'moxon@meta-x.de' );
-
 INSERT INTO items2 (category, question, answer ) VALUES ('Computer', 'Zu welchem Konzern gehört Lexmark?', 'IBM' );
 
 INSERT INTO items2 (category, question, answer ) VALUES ('Computerspiele', 'Welches ist DER Action-Shooter schlechthin und jetzt in der 3. Folge? (1999)', 'Quake' );
