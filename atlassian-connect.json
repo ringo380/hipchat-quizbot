@@ -30,7 +30,7 @@
     "webhook": [
       {
       "url": "{{localBaseUrl}}startquiz",
-      "pattern": "^/startquiz",
+      "pattern": "^startquiz",
       "event": "room_message",
       "name": "startquiz",
       "authentication": "jwt"
