@@ -7,7 +7,7 @@
     "url": "https://spirit21.com"
   },
   "links": {
-    "self": "{{localBaseUrl}}/atlassian-connect.json",
+    "self": "{{localBaseUrl}}atlassian-connect.json",
     "homepage": "{{localBaseUrl}}"
   },
   "capabilities": {
@@ -17,47 +17,47 @@
         "view_room"
       ],
       "avatar": {
-        "url": "{{localBaseUrl}}/img/logo.png",
-        "url@2x": "{{localBaseUrl}}/img/logo.png"
+        "url": "{{localBaseUrl}}img/logo.png",
+        "url@2x": "{{localBaseUrl}}img/logo.png"
       }
     },
     "installable": {
-      "callbackUrl": "{{localBaseUrl}}/installable"
+      "callbackUrl": "{{localBaseUrl}}installable"
     },
     "configurable": {
-      "url": "{{localBaseUrl}}/config"
+      "url": "{{localBaseUrl}}config"
     },
     "webhook": [
       {
-      "url": "{{localBaseUrl}}/startquiz",
+      "url": "{{localBaseUrl}}startquiz",
       "pattern": "^/startquiz",
       "event": "room_message",
       "name": "startquiz",
       "authentication": "jwt"
       },
       {
-      "url": "{{localBaseUrl}}/answer",
+      "url": "{{localBaseUrl}}answer",
       "pattern": "^[^\/].*",
       "event": "room_message",
       "name": "answer",
       "authentication": "jwt"
       },
       {
-      "url": "{{localBaseUrl}}/stopquiz",
+      "url": "{{localBaseUrl}}stopquiz",
       "pattern": "^/stopquiz",
       "event": "room_message",
       "name": "stopquiz",
       "authentication": "jwt"
       },
       {
-      "url": "{{localBaseUrl}}/next",
+      "url": "{{localBaseUrl}}next",
       "pattern": "^/next",
       "event": "room_message",
       "name": "again",
       "authentication": "jwt"
       },
       {
-      "url": "{{localBaseUrl}}/again",
+      "url": "{{localBaseUrl}}again",
       "pattern": "^/again",
       "event": "room_message",
       "name": "again",
