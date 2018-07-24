@@ -15,7 +15,7 @@ var nextCount = 0;
 var mysql = require('mysql');
 var mysqlConnection = null;
 
-var dbConfig = {'host': 'us-cdbr-iron-east-04.cleardb.net', 'user': 'bd9fe15960080b', 'password': '96e9524f', 'database': 'heroku_6399da5e90f0fab'};
+var dbConfig = {'host': 'us-cdbr-iron-east-04.cleardb.net', 'user': 'bdd96ef626cc56', 'password': '52770241', 'database': 'heroku_b4adb19fe403cb5'};
 
 function handleDisconnect(){
   mysqlConnection = mysql.createConnection(dbConfig); // Recreate the connection, since
